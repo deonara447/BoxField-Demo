@@ -20,6 +20,11 @@ namespace BoxField
 
         //create a list to hold a column of boxes        
         List<Box> boxesLeft = new List<Box>();
+        List<Box> boxesRight = new List<Box>();
+
+        int boxSize = 20;
+        int boxLeftX = 100;
+        int boxGap = 125;
 
         //counts to see when its time to create a new box
         int counter = 0;
@@ -38,9 +43,12 @@ namespace BoxField
         /// </summary>
         public void OnStart()
         {
-            //TODO - set game start values
-            Box b = new Box(4, 36, 10);
-            boxesLeft.Add(b);
+            //set game start values
+            Box b1 = new Box(boxLeftX, 0, boxSize);
+            boxesLeft.Add(b1);
+
+            Box b2 = new Box(boxLeftX + boxGap, 0, boxSize);
+            boxesRight.Add(b2);
 
             hero = new Box(50, 300, 20);
         }
@@ -75,24 +83,34 @@ namespace BoxField
 
         private void gameLoop_Tick(object sender, EventArgs e)
         {
-            //TODO - update location of all boxes (drop down screen)
+            //update location of all boxes (drop down screen)
             foreach (Box b in boxesLeft)
             {
                 b.Fall();
             }
 
-            //TODO - remove box if it has gone of screen
-            if(boxesLeft[0].y > 200)
+            foreach (Box b in boxesRight)
             {
-                boxesLeft.RemoveAt(0);
+                b.Fall();
             }
 
-            //TODO - add new box if it is time
-            counter++;
-            if (counter == 4)
+            //remove box if it has gone of screen
+            if (boxesLeft[0].y > 400)
             {
-                Box box = new Box(4, 36, 10);
-                boxesLeft.Add(box);
+                boxesLeft.RemoveAt(0);
+                boxesRight.RemoveAt(0);
+            }
+
+            //add new box if it is time
+            counter++;
+            if (counter == 9)
+            {
+                Box b1 = new Box(boxLeftX, 0, boxSize);
+                boxesLeft.Add(b1);
+
+                Box b2 = new Box(boxLeftX + boxGap, 0, boxSize);
+                boxesRight.Add(b2);
+
                 counter = 0;
             }
 
@@ -112,8 +130,13 @@ namespace BoxField
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
-            //TODO - draw boxes to screen
+            //draw boxes to screen
             foreach (Box b in boxesLeft)
+            {
+                e.Graphics.FillRectangle(boxBrush, b.x, b.y, b.size, b.size);
+            }
+
+            foreach (Box b in boxesRight)
             {
                 e.Graphics.FillRectangle(boxBrush, b.x, b.y, b.size, b.size);
             }
