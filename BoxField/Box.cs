@@ -11,12 +11,24 @@ namespace BoxField
     {
         public SolidBrush boxBrush;
         public int x, y, size;
+        Random randGen = new Random();
 
         public Box(int _x, int _y, int _size)
         {
             x = _x;
             y = _y;
             size = _size;
+
+            int randValue = randGen.Next(1, 3);
+
+            if (randValue == 1)
+            {
+                boxBrush = new SolidBrush(Color.Red);
+            }
+            else if (randValue == 2)
+            {
+                boxBrush = new SolidBrush(Color.Orange);
+            }
         }
 
         public Box(SolidBrush _boxBrush, int _x, int _y, int _size)
@@ -24,6 +36,7 @@ namespace BoxField
             x = _x;
             y = _y;
             size = _size;
+            boxBrush = _boxBrush;
         }
 
         public void Fall()
