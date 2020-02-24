@@ -12,11 +12,14 @@ namespace BoxField
 {
     public partial class GameScreen : UserControl
     {
+
+        Random randGen = new Random();
+
         //player1 button control keys
         Boolean leftArrowDown, rightArrowDown;
 
         //used to draw boxes on screen
-        SolidBrush boxBrush = new SolidBrush(Color.White);
+        SolidBrush whiteBrush = new SolidBrush(Color.White);
 
         //create a list to hold a column of boxes        
         List<Box> boxesLeft = new List<Box>();
@@ -24,10 +27,14 @@ namespace BoxField
 
         int boxSize = 20;
         int boxLeftX = 100;
-        int boxGap = 125;
+        int boxGap = 200;
+        int boxXOffset = 5;
+
 
         //counts to see when its time to create a new box
         int counter = 0;
+        int newBoxCounter = 0;
+        int patternAmount = 10;
 
         //create hero values
         Box hero;
@@ -50,6 +57,8 @@ namespace BoxField
             Box b2 = new Box(boxLeftX + boxGap, 0, boxSize);
             boxesRight.Add(b2);
 
+            newBoxCounter++;
+
             hero = new Box(50, 300, 20);
         }
 
@@ -63,7 +72,7 @@ namespace BoxField
                     break;
                 case Keys.Right:
                     rightArrowDown = true;
-                    break;           
+                    break;
             }
         }
 
@@ -105,6 +114,10 @@ namespace BoxField
             counter++;
             if (counter == 9)
             {
+                newBoxCounter++;
+
+                boxLeftX += boxXOffset;
+
                 Box b1 = new Box(boxLeftX, 0, boxSize);
                 boxesLeft.Add(b1);
 
@@ -112,15 +125,23 @@ namespace BoxField
                 boxesRight.Add(b2);
 
                 counter = 0;
+
+                if (newBoxCounter == patternAmount)
+                {
+                    boxXOffset = -boxXOffset;
+                    newBoxCounter = 0;
+
+                    patternAmount = randGen.Next(1, 8);
+                }
             }
 
             //move hero
-            if(leftArrowDown)
+            if (leftArrowDown)
             {
                 hero.Move("left");
             }
 
-            if(rightArrowDown)
+            if (rightArrowDown)
             {
                 hero.Move("right");
             }
@@ -133,15 +154,15 @@ namespace BoxField
             //draw boxes to screen
             foreach (Box b in boxesLeft)
             {
-                e.Graphics.FillRectangle(boxBrush, b.x, b.y, b.size, b.size);
+                e.Graphics.FillRectangle(b.boxBrush, b.x, b.y, b.size, b.size);
             }
 
             foreach (Box b in boxesRight)
             {
-                e.Graphics.FillRectangle(boxBrush, b.x, b.y, b.size, b.size);
+                e.Graphics.FillRectangle(b.boxBrush, b.x, b.y, b.size, b.size);
             }
 
-            e.Graphics.FillRectangle(boxBrush, hero.x, hero.y, hero.size, hero.size);
+            e.Graphics.FillRectangle(whiteBrush, hero.x, hero.y, hero.size, hero.size);
         }
     }
 }
